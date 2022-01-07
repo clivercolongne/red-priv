@@ -6,17 +6,17 @@ socket.on("cliver", data => {
     console.log(data);
     $("#chat").append(data + "<br>")
 })
-$("#user").change(emitir);
-$("#msn").change(emitir);
+
+$("#user","#msn" ).change(emitir);
 $("#btn").click(emitir);
 
 
 // Emite mensaje al servidor
 function emitir() {
     let now = new Date().toLocaleTimeString();
-    let msn = `[${now}] ` + $("#user")+ $("#msn")[0].value;
+    let msn = `[${now}] ` + $("#user","#msn")[0].value;
 
     socket.emit("cliver", msn);
 
-    $("#msn")[0].value = "";
+     $("#msn", "#user" )[0].value = "";
 }
