@@ -24,9 +24,9 @@ io.on('connection', (socket) => {
     console.log(`[${now}] Se abrió una nueva conexión !!`)
     
     // Cada vez que llega un mensaje al evento 'diego'
-    socket.on("diego", data => {
+    socket.on("cliver", data => {
         console.log(data);
-        io.sockets.emit("diego", data)
+        io.sockets.emit("cliver", data)
     })
 
 })

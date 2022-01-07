@@ -2,11 +2,11 @@ const socket = io();
 
 
 // Escuchando el evento 'diego'
-socket.on("diego", data => {
+socket.on("cliver", data => {
     console.log(data);
     $("#chat").append(data + "<br>")
 })
-
+$("#user").change(emitir);
 $("#msn").change(emitir);
 $("#btn").click(emitir);
 
@@ -14,9 +14,9 @@ $("#btn").click(emitir);
 // Emite mensaje al servidor
 function emitir() {
     let now = new Date().toLocaleTimeString();
-    let msn = `[${now}] ` + $("#msn")[0].value;
+    let msn = `[${now}] ` + $("#user")+ $("#msn")[0].value;
 
-    socket.emit("diego", msn);
+    socket.emit("cliver", msn);
 
     $("#msn")[0].value = "";
 }
