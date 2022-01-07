@@ -8,7 +8,7 @@ socket.on("diego", data => {
 })
 
 $("#msn").change(emitir);
-$("#btn").click(emitir);
+$("#btn").click();
 
 
 // Emite mensaje al servidor
