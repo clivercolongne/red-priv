@@ -1,22 +1,38 @@
-const socket = io();
+let username = sessionStorage.getItem("username")
+if (!username) {
+    username = prompt("Ingrese nombre de usuario:")
+}
+$("#username").html(username)
 
+const socket = io.connect()
 
-// Escuchando el evento 'diego'
-socket.on("diego", data => {
-    console.log(data);
-    $("#chat").append(data + "<br>")
+socket.on('messages', data => {
+    console.log(data)
+    render(data);
 })
 
-$("#msn").change(emitir);
-$("#btn").click();
+socket.on('stats', data => {
+    $("#stats").html(data.numUsers)
+})
 
-
-// Emite mensaje al servidor
-function emitir() {
-    let now = new Date().toLocaleTimeString();
-    let msn = `[${now}] ` + $("#msn")[0].value;
-
-    socket.emit("diego", msn);
-
-    $("#msn")[0].value = "";
+function render(data) {
+    data.forEach(info => {
+        $("#messages").prepend(`
+            <div>
+            [${info.time}] <strong>${info.author}</strong>
+                <em>${info.text}</em>
+            </div>
+        `)
+    })
 }
+
+$('#myForm').submit(e => {
+    e.preventDefault();
+
+    const mensaje = {
+        author: username,
+        text: $("#texto").val()
+    }
+
+    socket.emit('new-message', mensaje)
+});

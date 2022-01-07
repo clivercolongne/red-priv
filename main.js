@@ -1,32 +1,37 @@
 const express = require("express")
-const { Server: HttpServer } = require("http");
-const { SocketAddress } = require("net");
-const { Server: IOServer } = require('socket.io')
+const { Server: HttpServer } = require("http")
+const { Server: IOServer } = require("socket.io")
 
-const app = express();
+const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
+var numUsers = 0;
 
 app.use(express.static('./public'))
-app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: __dirname })
-});
 
-httpServer.listen(process.env.PORT || 3000, () => {
-    console.log("SERVER ON");
+const messages = []
+
+
+httpServer.listen(3000, function() {
+    console.log("Server running...")
 })
 
-io.on('connection', (socket) => {
-    // Se ejecuta una sola vez, cuando se conecta
-    // el cliente
-    let now = new Date().toLocaleTimeString();
-    console.log("--------------------------")
-    console.log(`[${now}] Se abrió una nueva conexión !!`)
-    
-    // Cada vez que llega un mensaje al evento 'diego'
-    socket.on("diego", data => {
-        console.log(data);
-        io.sockets.emit("diego", data)
+io.on("connection", (socket) => {
+    numUsers++;
+    io.emit("stats", { numUsers })
+    console.log("Users: ", numUsers)
+    socket.emit('messages', messages)
+
+    socket.on('new-message', data => {
+        data.time = new Date().toLocaleTimeString();
+        messages.push(data);
+        io.sockets.emit('messages', [data])
     })
 
+    socket.on('disconnect', () => {
+        numUsers--;
+        io.emit("stats", { numUsers })
+
+        console.log("Users: ", numUsers)
+    })
 })
